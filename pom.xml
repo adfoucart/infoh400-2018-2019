@@ -38,11 +38,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>be.eid</groupId>
-            <artifactId>jeidlib</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>be.fedict.commons-eid</groupId>
             <artifactId>commons-eid-client</artifactId>
             <version>0.8.0</version>
