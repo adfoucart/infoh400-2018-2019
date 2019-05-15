@@ -181,5 +181,15 @@ public class InstanceJpaController implements Serializable {
         }
         return instance;
     }
+
+    public List<Instance> findInstancesBySeries(Series s) {
+        EntityManager em = getEntityManager();
+        List<Instance> instances = null;
+        
+        TypedQuery<Instance> q = em.createNamedQuery("Instance.findBySeries", Instance.class);
+        instances = q.setParameter("series", s).getResultList();
+        
+        return instances;
+    }
     
 }

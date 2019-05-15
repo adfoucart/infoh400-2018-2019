@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 import ulb.lisa.his.database.exceptions.IllegalOrphanException;
 import ulb.lisa.his.database.exceptions.NonexistentEntityException;
 import ulb.lisa.his.model.Patient;
@@ -244,6 +245,26 @@ public class PatientJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    public Patient findPatientByPerson(Person p){
+        EntityManager em = getEntityManager();
+        Patient pat = null;
+        
+        TypedQuery<Patient> q = em.createNamedQuery("Patient.findByPerson", Patient.class);
+        pat = q.setParameter("person", p).getSingleResult();
+        
+        return pat;
+    }
+    
+    public List<Patient> findPatientsByName(String name){
+        EntityManager em = getEntityManager();
+        List<Patient> patients;
+        
+        TypedQuery<Patient> q = em.createNamedQuery("Patient.findByName", Patient.class);
+        patients = q.setParameter("name", "%"+name+"%").getResultList();
+        
+        return patients;
     }
 
     public int getPatientCount() {

@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Person.findByIdPerson", query = "SELECT p FROM Person p WHERE p.idPerson = :idPerson"),
     @NamedQuery(name = "Person.findByNameFamily", query = "SELECT p FROM Person p WHERE p.nameFamily = :nameFamily"),
     @NamedQuery(name = "Person.findByNameGiven", query = "SELECT p FROM Person p WHERE p.nameGiven = :nameGiven"),
+    @NamedQuery(name = "Person.searchByName", query = "SELECT p FROM Person p WHERE p.nameGiven LIKE :name OR p.nameFamily LIKE :name"),
     @NamedQuery(name = "Person.findByGender", query = "SELECT p FROM Person p WHERE p.gender = :gender"),
     @NamedQuery(name = "Person.findByBirthdate", query = "SELECT p FROM Person p WHERE p.birthdate = :birthdate"),
     @NamedQuery(name = "Person.findByNationalNumber", query = "SELECT p FROM Person p WHERE p.nationalNumber = :nationalNumber"),

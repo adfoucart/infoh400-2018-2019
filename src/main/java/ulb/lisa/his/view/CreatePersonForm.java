@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import ulb.lisa.his.model.Person;
-import ulb.lisa.his.util.BeIDCard;
+import ulb.lisa.his.util.BeID;
 
 /**
  *
@@ -32,7 +32,7 @@ public class CreatePersonForm extends javax.swing.JPanel {
         this.currentPerson = currentPerson;
         initComponents();
         
-        if( this.currentPerson != null || !BeIDCard.getInstance().hasCard() ) importFromIDButton.setEnabled(false);
+        if( this.currentPerson != null || !BeID.getInstance().hasCard() ) importFromIDButton.setEnabled(false);
         else importFromIDButton.setEnabled(true);
     }
     
@@ -189,7 +189,7 @@ public class CreatePersonForm extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void importFromIDButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importFromIDButtonActionPerformed
-        this.setPerson(BeIDCard.getInstance().read());
+        this.setPerson(BeID.getInstance().read());
     }//GEN-LAST:event_importFromIDButtonActionPerformed
 
 

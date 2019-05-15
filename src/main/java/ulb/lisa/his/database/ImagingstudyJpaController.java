@@ -305,4 +305,19 @@ public class ImagingstudyJpaController implements Serializable {
         return is;
     }
     
+    public List<Imagingstudy> findImagingstudiesByPatient(Patient pat) {
+        EntityManager em = getEntityManager();
+        List<Imagingstudy> is = null;
+        try {
+            TypedQuery<Imagingstudy> q = em.createNamedQuery("Imagingstudy.findByPatient", Imagingstudy.class);
+            is = q.setParameter("patient", pat).getResultList();
+        } catch(NoResultException ex){
+            return null;
+        } 
+        finally {
+            em.close();
+        }
+        return is;
+    }
+    
 }

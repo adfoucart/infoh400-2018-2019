@@ -210,5 +210,15 @@ public class SeriesJpaController implements Serializable {
         }
         return series;
     }
+
+    public List<Series> findSeriesByStudy(Imagingstudy study) {
+        EntityManager em = getEntityManager();
+        List<Series> series = null;
+        
+        TypedQuery<Series> q = em.createNamedQuery("Series.findByStudy", Series.class);
+        series = q.setParameter("study", study).getResultList();
+        
+        return series;
+    }
     
 }

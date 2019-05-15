@@ -17,6 +17,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import ulb.lisa.his.database.exceptions.IllegalOrphanException;
 import ulb.lisa.his.database.exceptions.NonexistentEntityException;
 import ulb.lisa.his.model.Practitioner;
@@ -357,6 +358,16 @@ public class PersonJpaController implements Serializable {
         finally {
             em.close();
         }
+    }
+    
+    public List<Person> searchPersonByName(String name){
+        EntityManager em = getEntityManager();
+        List<Person> persons = null;
+        
+        TypedQuery<Person> q = em.createNamedQuery("Person.searchByName", Person.class);
+        persons = q.setParameter("name", "%"+name+"%").getResultList();
+                
+        return persons;
     }
 
     public int getPersonCount() {

@@ -13,7 +13,6 @@ import ulb.lisa.his.database.UserJpaController;
 import ulb.lisa.his.model.Patient;
 import ulb.lisa.his.model.Practitioner;
 import ulb.lisa.his.model.User;
-import ulb.lisa.his.util.BeIDCard;
 
 /**
  *
@@ -29,9 +28,6 @@ public class MainWindow extends javax.swing.JFrame {
     private PersonListModel<Patient> patientModel = null;
     private PersonListModel<Practitioner> practitionerModel = null;
     private PersonListModel<User> userModel = null;
-    
-    private final BeIDCard cardReader = BeIDCard.getInstance();
-    
     
     /**
      * Creates new form MainWindow
