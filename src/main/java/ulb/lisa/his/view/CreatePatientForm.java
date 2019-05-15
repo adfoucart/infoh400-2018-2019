@@ -5,6 +5,7 @@
  */
 package ulb.lisa.his.view;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ import ulb.lisa.his.database.PersonJpaController;
 import ulb.lisa.his.model.Patient;
 import ulb.lisa.his.model.Person;
 import ulb.lisa.his.model.Practitioner;
+import ulb.lisa.his.util.BeID;
 
 /**
  *
@@ -56,6 +58,7 @@ public class CreatePatientForm extends javax.swing.JFrame {
                 generalPractitionerSelect.setSelectedItem(currentPat.getGeneralPractitioner());
         }
         
+        if( BeID.getInstance().hasCard() ) eIDPatientConsentButton.setEnabled(true);
     }
 
     /**
@@ -72,6 +75,8 @@ public class CreatePatientForm extends javax.swing.JFrame {
         generalPractitionerSelect = new javax.swing.JComboBox<>();
         doCreatePatientButton = new javax.swing.JButton();
         personForm = new ulb.lisa.his.view.CreatePersonForm();
+        eIDPatientConsentButton = new javax.swing.JButton();
+        patientConsentCheckBox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -88,6 +93,17 @@ public class CreatePatientForm extends javax.swing.JFrame {
             }
         });
 
+        eIDPatientConsentButton.setText("Patient Consent");
+        eIDPatientConsentButton.setEnabled(false);
+        eIDPatientConsentButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eIDPatientConsentButtonActionPerformed(evt);
+            }
+        });
+
+        patientConsentCheckBox.setText("Patient has not given consent");
+        patientConsentCheckBox.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -102,10 +118,16 @@ public class CreatePatientForm extends javax.swing.JFrame {
                             .addComponent(doCreatePatientButton)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
-                                .addComponent(jLabel8)
-                                .addGap(26, 26, 26)
-                                .addComponent(generalPractitionerSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 389, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(eIDPatientConsentButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(patientConsentCheckBox))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(generalPractitionerSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 370, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -118,7 +140,11 @@ public class CreatePatientForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(generalPractitionerSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(eIDPatientConsentButton)
+                    .addComponent(patientConsentCheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
                 .addComponent(doCreatePatientButton)
                 .addGap(19, 19, 19))
         );
@@ -154,10 +180,26 @@ public class CreatePatientForm extends javax.swing.JFrame {
         
     }//GEN-LAST:event_doCreatePatientButtonActionPerformed
 
+    private void eIDPatientConsentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eIDPatientConsentButtonActionPerformed
+
+        if( personForm.getPerson() == null || personForm.getPerson().getNationalNumber() == null ) return;
+        
+        if( BeID.getInstance().authenticate(personForm.getPerson()) ){
+            patientConsentCheckBox.setSelected(true);
+            patientConsentCheckBox.setText("Patient has given consent");
+        }
+        else {
+            patientConsentCheckBox.setSelected(false);
+            eIDPatientConsentButton.setBackground(Color.red);
+        }
+    }//GEN-LAST:event_eIDPatientConsentButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton doCreatePatientButton;
+    private javax.swing.JButton eIDPatientConsentButton;
     private javax.swing.JComboBox<Practitioner> generalPractitionerSelect;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JCheckBox patientConsentCheckBox;
     private ulb.lisa.his.view.CreatePersonForm personForm;
     private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables

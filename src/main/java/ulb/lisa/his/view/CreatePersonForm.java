@@ -146,9 +146,9 @@ public class CreatePersonForm extends javax.swing.JPanel {
                             .addComponent(givenNameField)
                             .addComponent(birthdateField)
                             .addComponent(nationalNumberField, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(15, 15, 15)
+                .addGap(19, 19, 19)
                 .addComponent(photoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

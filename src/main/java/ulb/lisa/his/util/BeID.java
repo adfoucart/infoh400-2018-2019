@@ -13,7 +13,21 @@ import be.fedict.commons.eid.client.FileType;
 import be.fedict.commons.eid.consumer.Gender;
 import be.fedict.commons.eid.consumer.Identity;
 import be.fedict.commons.eid.consumer.tlv.TlvParser;
+import be.fedict.commons.eid.jca.BeIDProvider;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.smartcardio.CardException;
@@ -72,6 +86,59 @@ public class BeID {
         }
 
         return null;
+    }
+    
+    public boolean authenticate(Person p){
+        try {
+            BeIDCard card = cards.getOneBeIDCard();
+            
+            // Check that the person corresponds to the eID:
+            byte[] idData = card.readFile(FileType.Identity);
+            Identity id = TlvParser.parse(idData, Identity.class);
+            if( !id.getNationalNumber().equals(p.getNationalNumber()) ) 
+                return false;
+            
+            // Check the authentication certificate:
+            Security.addProvider(new BeIDProvider());
+            try {
+                // Get KeyStore
+                KeyStore ks = KeyStore.getInstance("BeID");
+                ks.load(null);
+                
+                // Prepare access to authentication Private Key (Note that the key is not read here yet)
+                PrivateKey pk = (PrivateKey) ks.getKey("Authentication", null);
+
+                // Generate 64bits random challenge
+                byte[] challenge = SecureRandom.getInstance("SHA1PRNG").generateSeed(64); 
+
+                // Prepare challenge signature
+                Signature sig = Signature.getInstance("SHA1withRSA");
+                sig.initSign(pk);
+                sig.update(challenge);
+                
+                // Sign challenge: 
+                // IT'S ONLY HERE THAT THE PIN CODE DIALOG IS SHOWN, AND THE PRIVATE KEY IS USED.
+                byte[] sigValue = sig.sign();
+                
+                // Get Certificate to check validity of signature
+                Certificate cert = ks.getCertificate("Authentication");
+                
+                // Prepare signature verification (using same algorithm as before)
+                Signature verifSig = Signature.getInstance("SHA1withRSA");
+                verifSig.initVerify(cert);
+                verifSig.update(challenge);
+                
+                // Verifiy signature
+                return verifSig.verify(sigValue);
+            } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException | CertificateException | InvalidKeyException | SignatureException ex) {
+                Logger.getLogger(BeID.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
+            }
+            
+        } catch (CardException | IOException | InterruptedException | CancelledException ex) {
+            Logger.getLogger(BeID.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 
 }
